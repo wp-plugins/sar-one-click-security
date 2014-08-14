@@ -1,6 +1,6 @@
 === SAR One Click Security ===
 Contributors: samuelaguilera
-Tags: security, htaccess, spam, comments, bots, registration
+Tags: security, protection, htaccess, spam, comments, bots, registration, login, woocommerce
 Requires at least: 3.9.2
 Tested up to: 3.9.2
 Stable tag: 1.0
@@ -13,11 +13,13 @@ Adds some extra security to your WordPress with only one click. No options page,
 There's a lot of WordPress security plugins with many many options and pages to setup. And that is fine if you know what to do.
 But most of the times, you don't need so much or simply you're not sure about what to set or not.
 
-This plugin adds some extra security to your WordPress with only one click. No options page, just activate it!
+This plugin adds some extra security to your WordPress with only one click. **No options page, just activate it!**
 
-The plugin uses well known .htaccess rules, safe to use in almost any type of site, to protect your WordPress from common attacks.
+Like many other security plugins SAR One Click Security uses well known .htaccess rules, but only the ones probed to be safe to use in almost any type of site (including WooCommerce stores), to protect your WordPress from common attacks. This allows you to have a safer WordPress without worries about what protection you should be using.
 
-It has been tested in many servers including large providers like HostGator and Godaddy with optimal results, and it will work fine in any decent hosting service (that allows you to set options from .htaccess files). Anyway, if you get any problem after activating the plugin, check FAQ for instructions on how to manually uninstall it.
+It has been tested in many servers including large providers like HostGator and Godaddy with optimal results, and it will work fine in any decent hosting service (that allows you to set options from .htaccess files).
+
+Anyway, if you get any problem after activating the plugin, check FAQ for instructions on how to manually uninstall it. Or maybe check it before install the plugin if you're not sure about your hosting provider policy about .htacces
 
 = Features =
 
