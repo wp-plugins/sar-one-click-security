@@ -30,7 +30,7 @@ Anyway, if you get any problem after activating the plugin, check FAQ for instru
 * Blocks requests looking for timthumb.php (this means that you can't use a theme with TimThumb and this plugin together).
 * Blocks TRACE and TRACK request methods.
 * Blocks direct posting to wp-comments-post.php (most spammers do this).
-* Blocks direct access to PHP files in wp-content directory.
+* Blocks direct access to PHP files in wp-content directory (this includes subdirectories like plugins or themes). Protecting you from a huge number of 0day exploits.
 
 = Requirements =
 
