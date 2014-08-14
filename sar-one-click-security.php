@@ -49,7 +49,7 @@ function SAR_Add_Security_Rules(){
 	// Security rules	 
 	$sec_rules = array();
 	$sec_rules[] = "# Any decent hosting should have this set, but many don't have";
-	$sec_rules[] = 'ServerSignature Off'.PHP_EOL.'IndexIgnore *'; // Options -Indexes maybe is better, but some hostings doesn't allow the use of Options directives from .htaccess
+	$sec_rules[] = 'ServerSignature Off'.PHP_EOL.'<IfModule mod_autoindex.c>'.PHP_EOL.'IndexIgnore *'.PHP_EOL.'</IfModule>'; // Options -Indexes maybe is better, but some hostings doesn't allow the use of Options directives from .htaccess
 
 	$sec_rules[] = '# Block access to sensitive files';
 	$sec_rules[] = "<Files .htaccess>".PHP_EOL."order allow,deny".PHP_EOL."deny from all".PHP_EOL."</Files>";
