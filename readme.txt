@@ -25,7 +25,7 @@ Anyway, if you get any problem after activating the plugin, check FAQ for instru
 
 * Turn off ServerSignature directive, that may leak information about your web server.
 * Turn off directoy listing, avoiding bad configured hostings to leak your files.
-* Blocks access to following files, thay may leak information about your WordPress install: .htacces, license.txt, readme.html, wp-confing.php, wp-config-sample.php
+* Blocks access to following files, that may leak information about your WordPress install: .htacces, license.txt, readme.html, wp-confing.php, wp-config-sample.php
 * Stops dummy bots trying to register in WordPress sites that have registration disabled.
 * Blocks requests looking for timthumb.php (this means that you can't use a theme with TimThumb and this plugin together).
 * Blocks TRACE and TRACK request methods.
