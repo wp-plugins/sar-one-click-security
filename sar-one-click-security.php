@@ -4,7 +4,7 @@ Plugin Name: SAR One Click Security
 Plugin URI: http://www.samuelaguilera.com/
 Description: Adds some extra security to your WordPress with only one click. No options page, just activate it!
 Author: Samuel Aguilera
-Version: 1.0.1
+Version: 1.0.6
 Author URI: http://www.samuelaguilera.com
 License: GPL3
 */
@@ -23,16 +23,22 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// Current plugin version
+define('SAR_OCS_VER', 106);
+
 function SAR_OCS_Init() {
 
 	global $is_apache;
+
+	// Load language file first
+	load_plugin_textdomain( 'sar-one-click-security', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 
 	if ( !$is_apache ) {
 
 			function SAR_Apache_Not_Found() {
 			    ?>
 			    <div class="error">
-			        <p><?php _e( '<strong>SAR One Click Security only supports Apache servers</strong>. Your server is not Apache, please deactivate and delete the plugin.', 'sar-one-click-security' ); ?></p>
+			        <p><?php _e( '<strong>SAR One Click Security only supports Apache servers</strong>. Your server is not Apache, so there was no change. You should deactivate and delete this plugin.', 'sar-one-click-security' ); ?></p>
 			    </div>
 			    <?php
 			}
@@ -40,9 +46,42 @@ function SAR_OCS_Init() {
 
 	}
 
+	// Needs upgrade?
+	$current_ver = get_option('sar_ocs_ver');
+
+	if ( false === $current_ver || $current_ver < SAR_OCS_VER ) {
+
+		// Adds current ver to DB
+		add_option( 'sar_ocs_ver', SAR_OCS_VER );
+
+	}
+
 }
 
 add_action( 'plugins_loaded', 'SAR_OCS_Init' );
+
+
+function SAR_OCS_Activation(){
+
+	// Adds current ver to DB
+	add_option( 'sar_ocs_ver', SAR_OCS_VER );
+
+	// Install security rules
+	SAR_Add_Security_Rules();
+
+}
+
+function SAR_OCS_Deactivation(){
+
+	// Remove security rules
+	SAR_Remove_Security_Rules();
+
+	// Remove plugin ver from DB
+	delete_option( 'sar_ocs_ver' );
+}
+
+register_activation_hook( __FILE__, 'SAR_OCS_Activation' );
+register_deactivation_hook( __FILE__, 'SAR_OCS_Deactivation' );
 
 
 function SAR_Add_Security_Rules(){
@@ -114,13 +153,21 @@ function SAR_Add_Security_Rules(){
 		// Create .htacces for blocking direct access to PHP files in wp-content/ only if file .htaccess does not exists
 		$wpc_htaccess_exists = file_exists ( $wp_content_htaccess );
 
+		$wp_content_sec_rules = array();
+		$wp_content_sec_rules[] = '<FilesMatch "\.(php)$">'.PHP_EOL.'order allow,deny'.PHP_EOL.'deny from all'.PHP_EOL.'</FilesMatch>';
+
+
 		if (!$wpc_htaccess_exists) {
 
-			$wp_content_sec_rules = '# BEGIN SAR One Click Security'.PHP_EOL.'<FilesMatch "\.(php)$">'.PHP_EOL.'order allow,deny'.PHP_EOL.'deny from all'.PHP_EOL.'</FilesMatch>'.PHP_EOL.'# END SAR One Click Security';
 			file_put_contents($wp_content_htaccess, $wp_content_sec_rules, LOCK_EX);
 
 			// Stores an option to be sure that we delete (in the future) a file that we have created
 			add_option( 'sar_ocs_wpc_htaccess', 'yes' );	
+
+		} else { //If this file already exists... (rare but who knows!)
+
+			// Insert rules to existing .htaccess
+			insert_with_markers($wp_content_htaccess, "SAR One Click Security", $wp_content_sec_rules);
 
 		}
 
@@ -139,26 +186,29 @@ function SAR_Remove_Security_Rules(){
 		$htaccess = get_home_path().".htaccess";
 		$wp_content_htaccess = WP_CONTENT_DIR.'/.htaccess';
 
-		$wp_content_htaccess_owned = get_option( 'sar_ocs_wpc_htaccess', true );
+		$wp_content_htaccess_owned = get_option( 'sar_ocs_wpc_htaccess' );
 		
 		// Empty rules 
-		$sec_rules = array();
+		$empty_sec_rules = array();
 		
 		// Remove rules. Markers will remain, but are only comments. TODO: Maybe create a new function to remove markers too. 
-		insert_with_markers($htaccess, "SAR One Click Security", $sec_rules);
+		insert_with_markers($htaccess, "SAR One Click Security", $empty_sec_rules);
 
 		if ($wp_content_htaccess_owned === 'yes') {
 
 			// Remove .htacces from wp-content that we have created
 			unlink($wp_content_htaccess);
-			delete_option('sar_ocs_wpcontent_htaccess');
+			delete_option('sar_ocs_wpc_htaccess');
+
+		} else { // If the file was there before the plugin
+
+			// Remove rules. Markers will remain, but are only comments. TODO: Maybe create a new function to remove markers too. 
+			insert_with_markers($wp_content_htaccess, "SAR One Click Security", $empty_sec_rules);
 
 		}
+
 	}
 
 }
-
-register_activation_hook( __FILE__, 'SAR_Add_Security_Rules' );
-register_deactivation_hook( __FILE__, 'SAR_Remove_Security_Rules' );
 
 ?>

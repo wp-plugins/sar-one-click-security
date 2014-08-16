@@ -1,9 +1,9 @@
 === SAR One Click Security ===
 Contributors: samuelaguilera
-Tags: security, protection, htaccess, spam, comments, bots, registration, login, woocommerce
+Tags: security, protection, hardening, firewall, htaccess, spam, comments, bots, registration, login, woocommerce
 Requires at least: 3.9.2
 Tested up to: 3.9.2
-Stable tag: 1.0.1
+Stable tag: 1.0.6
 License: GPL3
 
 Adds some extra security to your WordPress with only one click.
@@ -57,7 +57,18 @@ If you get an error 500 page after activating the plugin this means that your ho
 You can manually uninstall plugin's .htacces rules by open your favorite FTP client and removing all content between **# BEGIN SAR One Click Security** and **# END SAR One Click Security** in your .htaccess file located in the root directory of your WordPress installation.
 And doing the same in the .htaccess file located in the wp-content dir (or deleting the file if no more content on it).
 
+= I'm not sure of what server is running my hosting, can I install this to try? =
+
+Yes. If you install this plugin in another server rather than Apache (nginx, IIS, etc...) the plugin only will show a notice in your WordPress admin dashboard, no modifications will be made.
+
 == Changelog ==
+
+= 1.0.6 =
+
+* Added translation support.
+* Added spanish (es_ES) translation.
+* Added routine for future upgrades.
+* Added support for existing .htacces in wp-content before plugin activation.
 
 = 1.0.1 =
 
