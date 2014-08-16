@@ -1,6 +1,6 @@
 === SAR One Click Security ===
 Contributors: samuelaguilera
-Tags: security, protection, htaccess, spam, comments, bots, registration, login, woocommerce
+Tags: security, protection, hardening, firewall, htaccess, spam, comments, bots, registration, login, woocommerce
 Requires at least: 3.9.2
 Tested up to: 3.9.2
 Stable tag: 1.0.1
