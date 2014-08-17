@@ -2,9 +2,9 @@
 /*
 Plugin Name: SAR One Click Security
 Plugin URI: http://www.samuelaguilera.com/
-Description: Adds some extra security to your WordPress with only one click. No options page, just activate it!
+Description: Adds some extra security to your WordPress with only one click.
 Author: Samuel Aguilera
-Version: 1.0.6
+Version: 1.0.7
 Author URI: http://www.samuelaguilera.com
 License: GPL3
 */
@@ -22,6 +22,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+if ( !defined( 'ABSPATH' ) ) exit; // Not needed in this case, but here's.
 
 // Current plugin version
 define('SAR_OCS_VER', 106);
@@ -130,7 +132,8 @@ function SAR_Add_Security_Rules(){
 		$sec_rules[] = 'RewriteRule ^(.*)/?timthumb\.php$ http://127.0.0.1 [L,R=301,NC,QSA]';
 		$sec_rules[] = '</IfModule>';
 
-		$sec_rules[] = '# Block TRACE and TRACK request methods';	
+		$sec_rules[] = '# Block TRACE and TRACK request methods'; // TRACK is not availabe in Apache (without plugins) is a IIS method, but bots will try it anyway.
+		$sec_rules[] = 'TraceEnable Off';	
 		$sec_rules[] = '<IfModule mod_rewrite.c>'.PHP_EOL.'RewriteEngine On';
 	    $sec_rules[] = 'RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)';
 	    $sec_rules[] = 'RewriteRule (.*) - [F]';
