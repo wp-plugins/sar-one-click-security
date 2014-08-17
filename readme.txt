@@ -2,7 +2,7 @@
 Contributors: samuelaguilera
 Tags: security, protection, hardening, firewall, htaccess, spam, comments, bots, registration, login, woocommerce
 Requires at least: 3.9.2
-Tested up to: 3.9.2
+Tested up to: 4.0-beta4
 Stable tag: 1.0.6
 License: GPL3
 
@@ -17,7 +17,7 @@ This plugin adds some extra security to your WordPress with only one click. **No
 
 = Features =
 
-Like many other security plugins SAR One Click Security uses well known .htaccess rules, but only the ones probed to be safe to use in almost any type of site (including WooCommerce stores), to protect your WordPress from common attacks. This allows you to have a safer WordPress without worries about what protection you should be using.
+Like many other security plugins SAR One Click Security adds well known .htaccess rules, but only the ones probed to be safe to use in almost any type of site (including WooCommerce stores), to protect your WordPress from common attacks. This allows you to have a safer WordPress without worries about what protection you should be using.
 
 * Turn off ServerSignature directive, that may leak information about your web server.
 * Turn off directoy listing, avoiding bad configured hostings to leak your files.
@@ -50,16 +50,28 @@ If you need to remove the security rules for some reason, simply deactivate the 
 
 == Frequently Asked Questions ==
 
+= Can I use this plugin together with Wordfence Security or any other security plugin? =
+
+If you use a plugin like Wordfence Security, or any other security plugin that gives you similar functionality (these that writes rules to .htaccess), you should not be using this plugin or another security plugin. **Using more than one security plugin at once can give you unexpected results**.
+
+Anyway, SAR One Click Security is a pretty friendly plugin, it adds his security rules without interfering in any other existing content in your .htacces file. In fact I'm using SAR One Click Security + All In One WP Security & Firewall in some sites that I manage.
+
+So technically you can do it if you know what you're doing, but if you do you're at your own risk. No support for problems due to the use of another security plugin together with this one.
+
+= I already have some custom rules in my .htaccess, will the plugin remove them? =
+
+The plugin doesn't touch any of the current content of your .htaccess file, it only adds **his own rules** when you activate it, and removes **his own rules** when you deactivate it.
+
+= I'm not sure of what server is running my hosting, can I install this to try? =
+
+Yes. If you install this plugin in another server rather than Apache (nginx, IIS, etc...) the plugin only will show a notice in your WordPress admin dashboard, no modifications will be made.
+
 = After activating the plugin I get an error 500 page, what can I do? =
 
 If you get an error 500 page after activating the plugin this means that your hosting provider doesn't allow you to set some (or any) settings from your .htaccess
 
 You can manually uninstall plugin's .htacces rules by open your favorite FTP client and removing all content between **# BEGIN SAR One Click Security** and **# END SAR One Click Security** in your .htaccess file located in the root directory of your WordPress installation.
 And doing the same in the .htaccess file located in the wp-content dir (or deleting the file if no more content on it).
-
-= I'm not sure of what server is running my hosting, can I install this to try? =
-
-Yes. If you install this plugin in another server rather than Apache (nginx, IIS, etc...) the plugin only will show a notice in your WordPress admin dashboard, no modifications will be made.
 
 == Changelog ==
 
