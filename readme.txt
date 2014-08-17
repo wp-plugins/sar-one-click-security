@@ -21,18 +21,18 @@ Like many other security plugins SAR One Click Security uses well known .htacces
 
 * Turn off ServerSignature directive, that may leak information about your web server.
 * Turn off directoy listing, avoiding bad configured hostings to leak your files.
-* Blocks access to following files, that may leak information about your WordPress install: .htacces, license.txt, readme.html, wp-confing.php, wp-config-sample.php
+* Blocks public access (from web) to following files that may leak information about your WordPress install: .htacces, license.txt, readme.html, wp-confing.php, wp-config-sample.php
 * Stops dummy bots trying to register in WordPress sites that have registration disabled.
-* Blocks requests looking for timthumb.php (this means that you can't use a theme with TimThumb and this plugin together).
-* Blocks TRACE and TRACK request methods.
-* Blocks direct posting to wp-comments-post.php (most spammers do this).
+* Blocks requests looking for timthumb.php, reducing server load caused by bots trying to find it (this means that you can't use a theme with TimThumb and this plugin together).
+* Blocks TRACE and TRACK request methods, preventing XST attacks.
+* Blocks direct posting to wp-comments-post.php (most spammers do this), reducing spam comments a lot and also server load.
 * Blocks direct access to PHP files in wp-content directory (this includes subdirectories like plugins or themes). Protecting you from a huge number of 0day exploits.
 
 = Requirements =
 
 * WordPress 3.9.2 or higher.
 * Apache2 web server
-* A theme that doesn't use Timthumb script (any decent recent theme does not use it).
+* **A theme that doesn't use Timthumb script** (any decent recent theme does not use it).
 
 It has been tested in many servers including large providers like HostGator and Godaddy with optimal results, and it will work fine in any decent hosting service (that allows you to set options from .htaccess files).
 

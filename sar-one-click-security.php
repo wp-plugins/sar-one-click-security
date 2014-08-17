@@ -2,7 +2,7 @@
 /*
 Plugin Name: SAR One Click Security
 Plugin URI: http://www.samuelaguilera.com/
-Description: Adds some extra security to your WordPress with only one click. No options page, just activate it!
+Description: Adds some extra security to your WordPress with only one click.
 Author: Samuel Aguilera
 Version: 1.0.6
 Author URI: http://www.samuelaguilera.com
