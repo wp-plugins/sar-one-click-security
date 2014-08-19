@@ -1,6 +1,5 @@
 === SAR One Click Security ===
 Contributors: samuelaguilera
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=AV35DGUR2BCLS
 Tags: security, protection, hardening, firewall, htaccess, spam, comments, bots, registration, login, woocommerce
 Requires at least: 3.9.2
 Tested up to: 4.0-beta4
@@ -23,21 +22,19 @@ Like many other security plugins SAR One Click Security adds well known .htacces
 * Turn off ServerSignature directive, that may leak information about your web server.
 * Turn off directoy listing, avoiding bad configured hostings to leak your files.
 * Blocks public access (from web) to following files that may leak information about your WordPress install: .htacces, license.txt, readme.html, wp-config.php, wp-config-sample.php
-* Blocks access to wp-login.php to dummy bots trying to register in WordPress sites that have registration disabled (when they try to register are redirected to wp-login.php by WordPress.
-* Blocks requests looking for timthumb.php, reducing server load caused by bots trying to find it. (*)
+* Stops dummy bots trying to register in WordPress sites that have registration disabled.
+* Blocks requests looking for timthumb.php, reducing server load caused by bots trying to find it (this means that you can't use a theme with TimThumb and this plugin together).
 * Blocks TRACE and TRACK request methods, preventing XST attacks.
-* Blocks direct posting to wp-comments-post.php (most spammers do this) and access with blank User Agent, reducing spam comments a lot and also server load.
+* Blocks direct posting to wp-comments-post.php (most spammers do this), reducing spam comments a lot and also server load.
 * Blocks direct access to PHP files in wp-content directory (this includes subdirectories like plugins or themes). Protecting you from a huge number of 0day exploits.
-* Blocks direct POST to wp-login.php and access with blank User Agent, preventing most brute-force attacks and reducing server load.
-
-(*) If your theme uses TimThumb, you can disable that blocking rule, check FAQ before installing the plugin to see how.
 
 = Requirements =
 
-* WordPress 3.9.2 or higher. (Works with WordPress network/multisite installation).
+* WordPress 3.9.2 or higher.
 * Apache2 web server
+* **A theme that doesn't use Timthumb script** (any decent recent theme does not use it).
 
-It has been tested in many servers including large providers like HostGator, Godaddy and 1&1 with optimal results, and it will work fine in any decent hosting service (that allows you to set options from .htaccess files).
+It has been tested in many servers including large providers like HostGator and Godaddy with optimal results, and it will work fine in any decent hosting service (that allows you to set options from .htaccess files).
 
 Anyway, if you get any problem after activating the plugin, check FAQ for instructions on how to manually uninstall it. Or maybe check it before install the plugin if you're not sure about your hosting provider policy about .htacces
 
@@ -46,8 +43,6 @@ Anyway, if you get any problem after activating the plugin, check FAQ for instru
 To apply above mentioned security rules simply install and activate the plugin, no options page, no user setup!
 
 If you need to remove the security rules for some reason, simply deactivate the plugin. If you want to add them again, activate the plugin again, that easy ;)
-
-And remember, **if your theme uses TimThumb, check FAQ before installing the plugin**.
  	
 == Installation ==
 
@@ -71,18 +66,6 @@ The plugin doesn't touch any of the current content of your .htaccess file, it o
 
 Yes. If you install this plugin in another server rather than Apache (nginx, IIS, etc...) the plugin only will show a notice in your WordPress admin dashboard, no modifications will be made.
 
-= My theme uses TimThumb script, can I use this plugin? =
-
-Yes. But **you must** add the following line to your wp-config.php file **BEFORE** activating the plugin.
-
-define('SAR_ALLOW_TIMTHUMB', '');
-
-That will allow you to use all features of the plugin excerpt for the TimThumb blocking rule.
-
-If you activated the plugin before inserting the above line in your wp-config.php file, simply deactivate/activate the plugin to allow access for timthumb.php and thumb.php (another file name used for TimThumb).
-
-And if you want to turn off TimThumb support, simply remove the previous mentioned line and deactivate/activate the plugin.
-
 = After activating the plugin I get an error 500 page, what can I do? =
 
 If you get an error 500 page after activating the plugin this means that your hosting provider doesn't allow you to set some (or any) settings from your .htaccess
@@ -91,13 +74,6 @@ You can manually uninstall plugin's .htacces rules by open your favorite FTP cli
 And doing the same in the .htaccess file located in the wp-content dir (or deleting the file if no more content on it).
 
 == Changelog ==
-
-= 1.1 =
-
-* Added support for themes using timthumb.php, check FAQ before installing the plugin to see how.
-* Added blocking of access to wp-login.php with blank User Agent and direct posting of credentials
-* Improved code that handles .htaccess at wp-content
-* Greatly improved some .htaccess rules 
 
 = 1.0.6 =
 
@@ -116,10 +92,6 @@ And doing the same in the .htaccess file located in the wp-content dir (or delet
 * First release.
 
 == Upgrade notice ==
-
-= 1.1 =
-
-* Recommended upgrade! See changelog.
 
 = 1.0.1 =
 
