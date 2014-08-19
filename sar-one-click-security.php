@@ -66,7 +66,7 @@ function SAR_OCS_Init() {
 
 }
 
-add_action( 'plugins_loaded', 'SAR_OCS_Init' );
+add_action( 'admin_init', 'SAR_OCS_Init' );
 
 
 function SAR_OCS_Activation(){
@@ -141,7 +141,7 @@ function SAR_Add_Security_Rules(){
 
 		$sec_rules[] = '# Stops dummy bots trying to register in WordPress sites that have registration disabled';
 		$sec_rules[] = '<IfModule mod_rewrite.c>'.PHP_EOL.'RewriteEngine On';
-		$sec_rules[] = 'RewriteCond %{QUERY_STRING} (registration=disabled|action=register) [NC,OR]'.PHP_EOL.'RewriteCond %{HTTP_REFERER} registration=disabled [NC]'.PHP_EOL.'RewriteRule ^wp-login.php http://127.0.0.1 [L,R=301]';
+		$sec_rules[] = 'RewriteCond %{QUERY_STRING} ^action=register$ [NC,OR]'.PHP_EOL.'RewriteCond %{HTTP_REFERER} ^.*registration=disabled$ [NC]'.PHP_EOL.'RewriteRule (.*) http://127.0.0.1 [L,R=301]';
 		$sec_rules[] = '</IfModule>';
 
 		if ( !defined( 'SAR_ALLOW_TIMTHUMB' ) ) {
@@ -153,19 +153,20 @@ function SAR_Add_Security_Rules(){
 
 		$sec_rules[] = '# Block TRACE and TRACK request methods'; // TRACK is not availabe in Apache (without plugins) is a IIS method, but bots will try it anyway.
 		$sec_rules[] = '<IfModule mod_rewrite.c>'.PHP_EOL.'RewriteEngine On';
-	    $sec_rules[] = 'RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)';
+	    $sec_rules[] = 'RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)$';
 	    $sec_rules[] = 'RewriteRule (.*) - [F]';
 		$sec_rules[] = '</IfModule>';
 
 		if (!$wp_domain_not_supported) { // We don't want to add this if the domain is not supported...
-			$sec_rules[] = '# Blocks direct posting to wp-comments-post.php and wp-login.php';	
+			$sec_rules[] = '# Blocks direct posting to wp-comments-post.php/wp-login.php and black User Agent';	
 			$sec_rules[] = '<IfModule mod_rewrite.c>'.PHP_EOL.'RewriteEngine On';
-			$sec_rules[] = 'RewriteCond %{REQUEST_METHOD} ^(PUT|POST|GET)$ [NC]';
-			$sec_rules[] = 'RewriteCond %{REQUEST_URI} ^.(wp-login|wp-comments-post)\.php$ [NC]';
-			$sec_rules[] = 'RewriteCond %{HTTP_REFERER} !.*'.$wp_domain_exploded.'.* [OR]';
+			$sec_rules[] = 'RewriteCond %{REQUEST_METHOD} ^(PUT|POST)$ [NC]';
+			$sec_rules[] = 'RewriteCond %{REQUEST_URI} ^.(wp-comments-post|wp-login)\.php$ [NC]';
+			$sec_rules[] = 'RewriteCond %{HTTP_REFERER} !^.*'.$wp_domain_exploded.'.*$ [OR]';
 			$sec_rules[] = 'RewriteCond %{HTTP_USER_AGENT} ^$';
 			$sec_rules[] = 'RewriteRule (.*) http://127.0.0.1 [L,R=301]';
 			$sec_rules[] = '</IfModule>';
+
 		}
 
 		// Insert rules to existing .htaccess or create new file if no .htaccess is present
