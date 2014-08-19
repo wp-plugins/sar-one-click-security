@@ -1,10 +1,10 @@
 <?php
 /*
 Plugin Name: SAR One Click Security
-Plugin URI: http://www.samuelaguilera.com/
+Plugin URI: http://www.samuelaguilera.com/archivo/protege-wordpress-facilmente.xhtml
 Description: Adds some extra security to your WordPress with only one click.
 Author: Samuel Aguilera
-Version: 1.0.7
+Version: 1.1.1
 Author URI: http://www.samuelaguilera.com
 License: GPL3
 */
@@ -23,10 +23,12 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-if ( !defined( 'ABSPATH' ) ) exit; // Not needed in this case, but here's.
+// TODO: Convert settigs individual settings to an array... (when I'm sure that no more settings are planned) 
+
+if ( !defined( 'ABSPATH' ) ) { exit; } // Not needed in this case, but maybe in the future...
 
 // Current plugin version
-define('SAR_OCS_VER', 106);
+define('SAR_OCS_VER', 109);
 
 function SAR_OCS_Init() {
 
@@ -53,10 +55,14 @@ function SAR_OCS_Init() {
 
 	if ( false === $current_ver || $current_ver < SAR_OCS_VER ) {
 
-		// Adds current ver to DB
-		add_option( 'sar_ocs_ver', SAR_OCS_VER );
+		// Upgrade rules
+		SAR_Remove_Security_Rules();
+		SAR_Add_Security_Rules();
 
-	}
+		// Update current ver to DB
+		update_option( 'sar_ocs_ver', SAR_OCS_VER );
+
+	}	
 
 }
 
@@ -68,6 +74,17 @@ function SAR_OCS_Activation(){
 	// Adds current ver to DB
 	add_option( 'sar_ocs_ver', SAR_OCS_VER );
 
+	// Checks if user 'admin' exists
+	$wp_users = get_users( array( role=> 'administrator', fields => array( 'user_login' ) ) );
+
+	foreach ( $wp_users as $user ) {
+		if ( $user->user_login === 'admin' ) { $has_admin = true; break; }
+	}
+
+	if ( !$has_admin ) { add_option( 'sar_ocs_block_admin', 'yes' ); }
+
+	// TODO: Create function to manage blocking of admin user login.
+
 	// Install security rules
 	SAR_Add_Security_Rules();
 
@@ -78,8 +95,9 @@ function SAR_OCS_Deactivation(){
 	// Remove security rules
 	SAR_Remove_Security_Rules();
 
-	// Remove plugin ver from DB
+	// Remove options stored
 	delete_option( 'sar_ocs_ver' );
+	delete_option( 'sar_ocs_block_admin' );	
 }
 
 register_activation_hook( __FILE__, 'SAR_OCS_Activation' );
@@ -112,7 +130,6 @@ function SAR_Add_Security_Rules(){
 			$wp_domain_not_supported = true; // for IP based URLs
 		}
 
-
 		// Security rules	 
 		$sec_rules = array();
 		$sec_rules[] = "# Any decent hosting should have this set, but many don't have";
@@ -127,30 +144,31 @@ function SAR_Add_Security_Rules(){
 		$sec_rules[] = 'RewriteCond %{QUERY_STRING} (registration=disabled|action=register) [NC,OR]'.PHP_EOL.'RewriteCond %{HTTP_REFERER} registration=disabled [NC]'.PHP_EOL.'RewriteRule ^wp-login.php http://127.0.0.1 [L,R=301]';
 		$sec_rules[] = '</IfModule>';
 
-		$sec_rules[] = '# Block requests looking for timthumb.php';	
-		$sec_rules[] = '<IfModule mod_rewrite.c>'.PHP_EOL.'RewriteEngine On';
-		$sec_rules[] = 'RewriteRule ^(.*)/?timthumb\.php$ http://127.0.0.1 [L,R=301,NC,QSA]';
-		$sec_rules[] = '</IfModule>';
+		if ( !defined( 'SAR_ALLOW_TIMTHUMB' ) ) {
+			$sec_rules[] = '# Block requests looking for timthumb.php';	
+			$sec_rules[] = '<IfModule mod_rewrite.c>'.PHP_EOL.'RewriteEngine On';
+			$sec_rules[] = 'RewriteRule ^(.*)/?timthumb\.php$ http://127.0.0.1 [L,R=301,NC,QSA]';
+			$sec_rules[] = '</IfModule>';
+		}
 
 		$sec_rules[] = '# Block TRACE and TRACK request methods'; // TRACK is not availabe in Apache (without plugins) is a IIS method, but bots will try it anyway.
-		$sec_rules[] = 'TraceEnable Off';	
 		$sec_rules[] = '<IfModule mod_rewrite.c>'.PHP_EOL.'RewriteEngine On';
 	    $sec_rules[] = 'RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)';
 	    $sec_rules[] = 'RewriteRule (.*) - [F]';
 		$sec_rules[] = '</IfModule>';
 
 		if (!$wp_domain_not_supported) { // We don't want to add this if the domain is not supported...
-			$sec_rules[] = '# Blocks direct posting to wp-comments-post.php';	
+			$sec_rules[] = '# Blocks direct posting to wp-comments-post.php and wp-login.php';	
 			$sec_rules[] = '<IfModule mod_rewrite.c>'.PHP_EOL.'RewriteEngine On';
 			$sec_rules[] = 'RewriteCond %{REQUEST_METHOD} ^(PUT|POST|GET)$ [NC]';
-			$sec_rules[] = 'RewriteCond %{REQUEST_URI} .wp-comments-post\.php*';
-			$sec_rules[] = 'RewriteCond %{HTTP_REFERER} !^http(s)://(www\.)?'.$wp_domain_exploded.'/.*$ [OR]';
+			$sec_rules[] = 'RewriteCond %{REQUEST_URI} ^.(wp-login|wp-comments-post)\.php$ [NC]';
+			$sec_rules[] = 'RewriteCond %{HTTP_REFERER} !.*'.$wp_domain_exploded.'.* [OR]';
 			$sec_rules[] = 'RewriteCond %{HTTP_USER_AGENT} ^$';
 			$sec_rules[] = 'RewriteRule (.*) http://127.0.0.1 [L,R=301]';
 			$sec_rules[] = '</IfModule>';
 		}
 
-		// Insert rules to .htaccess
+		// Insert rules to existing .htaccess or create new file if no .htaccess is present
 		insert_with_markers($htaccess, "SAR One Click Security", $sec_rules);
 
 		// Create .htacces for blocking direct access to PHP files in wp-content/ only if file .htaccess does not exists
@@ -159,20 +177,19 @@ function SAR_Add_Security_Rules(){
 		$wp_content_sec_rules = array();
 		$wp_content_sec_rules[] = '<FilesMatch "\.(php)$">'.PHP_EOL.'order allow,deny'.PHP_EOL.'deny from all'.PHP_EOL.'</FilesMatch>';
 
-
-		if (!$wpc_htaccess_exists) {
-
-			file_put_contents($wp_content_htaccess, $wp_content_sec_rules, LOCK_EX);
-
-			// Stores an option to be sure that we delete (in the future) a file that we have created
-			add_option( 'sar_ocs_wpc_htaccess', 'yes' );	
-
-		} else { //If this file already exists... (rare but who knows!)
-
-			// Insert rules to existing .htaccess
-			insert_with_markers($wp_content_htaccess, "SAR One Click Security", $wp_content_sec_rules);
-
+		if ( defined( 'SAR_ALLOW_TIMTHUMB' ) ) {
+			$wp_content_sec_rules[] = '# Allow requests looking for TimThumb';	
+			$wp_content_sec_rules[] = '<FilesMatch "^(timthumb|thumb)\.php$">';
+			$wp_content_sec_rules[] = 'Order Allow,Deny';
+			$wp_content_sec_rules[] = 'Allow from all';
+			$wp_content_sec_rules[] = '</FilesMatch>';
 		}
+
+		// Stores an option to be sure that we delete (in the future) a file that we have created
+		if (!$wpc_htaccess_exists) { add_option( 'sar_ocs_wpc_htaccess', 'yes' ); } 
+
+		// Insert rules to existing .htaccess or create new file if no .htaccess is present
+		insert_with_markers($wp_content_htaccess, "SAR One Click Security", $wp_content_sec_rules);		
 
 	}
 
