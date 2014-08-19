@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: security, protection, hardening, firewall, htaccess, spam, comments, bots, registration, login, woocommerce
 Requires at least: 3.9.2
 Tested up to: 4.0-beta4
-Stable tag: 1.1
+Stable tag: 1.0.6
 License: GPL3
 
 Adds some extra security to your WordPress with only one click.
