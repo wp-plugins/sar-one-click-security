@@ -66,7 +66,7 @@ function SAR_OCS_Init() {
 
 }
 
-add_action( 'plugins_loaded', 'SAR_OCS_Init' );
+add_action( 'admin_init', 'SAR_OCS_Init' );
 
 
 function SAR_OCS_Activation(){
