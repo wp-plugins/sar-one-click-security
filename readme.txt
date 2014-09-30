@@ -48,6 +48,17 @@ To apply above mentioned security rules simply install and activate the plugin, 
 If you need to remove the security rules for some reason, simply deactivate the plugin. If you want to add them again, activate the plugin again, that easy ;)
 
 And remember, **if your theme uses TimThumb, check FAQ before installing the plugin**.
+
+= Known issues =
+
+There are some plugins that uses direct access to .php files in the wp-conteng/plugins/ directory. That, in my honest opinion, is bad practice and should be avoided.
+
+If you use some of these plugins, you can't use this.
+
+Some plugins detected with this behaviour:
+
+* Google Doc Embedder
+* Yet Another Related Posts Plugin (YARPP)
  	
 == Installation ==
 
