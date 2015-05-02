@@ -3,7 +3,7 @@ Contributors: samuelaguilera
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=AV35DGUR2BCLS
 Tags: security, protection, hardening, firewall, htaccess, spam, comments, bots, registration, login, woocommerce
 Requires at least: 3.9.2
-Tested up to: 4.0
+Tested up to: 4.2.1
 Stable tag: 1.1
 License: GPL3
 
